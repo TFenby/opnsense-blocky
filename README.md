@@ -17,25 +17,19 @@ Currently ships Blocky v0.28.2 for FreeBSD 14 amd64.
 
 Run the following commands on your OPNsense box.
 
-**1. Install the repository signing key:**
-
-```sh
-mkdir -p /usr/local/etc/pkg/keys
-fetch -o /usr/local/etc/pkg/keys/tfenby.pub https://tfenby.github.io/opnsense-blocky/repo.pub
-```
-
-**2. Install the repository config:**
+**1. Install the repository config:**
 
 ```sh
 fetch -o /usr/local/etc/pkg/repos/os-blocky-tfenby.conf https://tfenby.github.io/opnsense-blocky/repo-tfenby.conf
 ```
 
-**3. Install the plugin:**
+**2. Install the packages:**
 
 ```sh
-pkg update
-pkg install os-blocky-tfenby
+pkg add https://tfenby.github.io/opnsense-blocky/FreeBSD:14:amd64/blocky-tfenby-0.28_2.pkg https://tfenby.github.io/opnsense-blocky/FreeBSD:14:amd64/os-blocky-tfenby-1.5_2.pkg
 ```
+
+The plugin package installs the repository signing key, so future updates can be done through the OPNsense UI or `pkg upgrade`.
 
 After installation, enable Blocky under **Services** in the OPNsense web UI.
 
@@ -53,7 +47,7 @@ Two trust layers are available.
 
 **Repository signing**
 
-The package catalog is signed with an RSA key. `pkg update` verifies the signature automatically if the signing key is installed (step 1 above). The signing key (`repo.pub`) is also GPG-signed by the maintainer — verify with:
+The package catalog is signed with an RSA key. `pkg update` verifies the signature automatically using the signing key installed by the plugin package. The signing key (`repo.pub`) is also GPG-signed by the maintainer — verify with:
 
 ```sh
 fetch https://tfenby.github.io/opnsense-blocky/repo.pub.asc
