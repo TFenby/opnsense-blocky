@@ -11,27 +11,37 @@ Two packages are provided:
 - **`blocky-tfenby`** — Blocky DNS proxy binary (upstream: [0xERR0R/blocky](https://github.com/0xERR0R/blocky)), repackaged for FreeBSD
 - **`os-blocky-tfenby`** — OPNsense plugin providing UI integration, service control, and configuration management
 
-Currently ships Blocky v0.28.2 for FreeBSD 14 amd64.
+Packages are published per ABI directory (`FreeBSD:15:amd64` for OPNsense 26.7,
+which is based on FreeBSD 15.1). `pkg` picks the right one automatically via
+`${ABI}` in the repository config.
 
 ## Installation
 
 Run the following commands on your OPNsense box.
 
-**1. Install the repository config:**
+**1. Install the repository signing key and config:**
 
 ```sh
+fetch -o /usr/local/etc/pkg/keys/tfenby.pub https://tfenby.github.io/opnsense-blocky/repo.pub
 fetch -o /usr/local/etc/pkg/repos/os-blocky-tfenby.conf https://tfenby.github.io/opnsense-blocky/repo-tfenby.conf
 ```
 
-**2. Install the packages:**
+The key is fetched by hand here because the repository catalog is signed with it,
+and the copy shipped inside the plugin package is not on disk yet.
+
+**2. Install the plugin:**
 
 ```sh
-pkg add https://tfenby.github.io/opnsense-blocky/FreeBSD:14:amd64/blocky-tfenby-0.28_2.pkg https://tfenby.github.io/opnsense-blocky/FreeBSD:14:amd64/os-blocky-tfenby-1.5_2.pkg
+pkg update
+pkg install os-blocky-tfenby
 ```
 
-The plugin package installs the repository signing key, so future updates can be done through the OPNsense UI or `pkg upgrade`.
+`blocky-tfenby` (the Blocky binary) is pulled in as a dependency. Later updates go
+through the OPNsense UI or `pkg upgrade`.
 
-After installation, enable Blocky under **Services** in the OPNsense web UI.
+After installation, enable Blocky under **Services** in the OPNsense web UI, then
+edit `/usr/local/etc/blocky/config.yml` (created from the packaged sample on first
+install).
 
 ## Uninstall
 
